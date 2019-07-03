@@ -1,0 +1,25 @@
+<!doctype html>
+
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>WASM test</title>
+  </head>
+
+  <body>
+    <body>
+      <script src="gcd.js"> </script>
+      <script>
+        Module.onRuntimeInitialized = function() {
+          const getCellStatus = Module.cwrap('calculate_gcd', 'number', ['number', 'number']);
+          console.log(getCellStatus(1,3));
+          console.log(getCellStatus(0,3));
+          console.log(getCellStatus(0,2));
+          console.log(getCellStatus(1,1));
+        }
+      </script>
+    </body>
+  </body>
+
+</html>
