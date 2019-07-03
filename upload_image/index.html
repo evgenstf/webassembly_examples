@@ -1,32 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <title>Upload Files</title>
+  </head>
+
   <body>
-
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
-    <script type="text/javascript">   
-      function hideBtn(){
-        $('#upload').hide();
-        $('#res').html("Uploading...");
-      }
-
-      function handleResponse(mes) {
-        $('#upload').show();
-        if (mes.errors != null) {
-          $('#res').html("Errors while uploading file" + mes.errors);
-        }   
-        else {
-          $('#res').html("File " + mes.name + " has been uploaded");   
-        }   
-      }
-    </script>
-
-
-    <form action="upload.php" method="post" target="hiddenframe" enctype="multipart/form-data" onsubmit="hideBtn();">
-      <input type="file" id="userfile" name="userfile" />
-      <input type="submit" name="upload" id="upload" value="Загрузить" />
+    <form method="post" enctype="multipart/form-data">
+      <input type="file" name="files[]" multiple />
+      <input type="submit" value="Upload File" name="submit" />
     </form>
-    <div id="res"></div>
-    <iframe id="hiddenframe" name="hiddenframe" style="width:0px; height:0px; border:0px"></iframe>
 
+    <script src="upload.js"></script>
   </body>
 </html>
