@@ -32,14 +32,14 @@ function useFileInput(files) {
 
     copyArray = Module.cwrap('process_bytes', null, ['number', 'number']);
 
-    // Takes an Int32Array, copies it to the heap and returns a pointer
+    // Takes an Int8Array, copies it to the heap and returns a pointer
     function arrayToPtr(array) {
       var ptr = Module._malloc(array.length)
       Module.HEAP8.set(array, ptr)
       return ptr
     }
 
-    // Takes a pointer and  array length, and returns a Int32Array from the heap
+    // Takes a pointer and  array length, and returns a Int8Array from the heap
     function ptrToArray(ptr, length) {
       var array = new Int8Array(length)
       var pos = ptr
@@ -47,13 +47,27 @@ function useFileInput(files) {
       return array
     }
 
-    return ptrToArray(copyArray(arrayToPtr(data), data.length), data.length)
+    var processedArray = ptrToArray(copyArray(arrayToPtr(data), data.length), data.length)
+    console.log("processedArray", processedArray)
+
+
+    $.ajax({
+      type: "POST",
+      url: 'process.php',
+      data : {
+        data: processedArray
+      },
+      success: function(data) {
+        alert("success!");
+        console.log(data);
+      }
+    });
+
     //Module.ccall('process_bytes', null, [], null);
 
     // fileInput.value = '';
   };
-  var result_data = fr.readAsArrayBuffer(file);
-  console.log("result_data: ", result_data)
+  fr.readAsArrayBuffer(file);
 }
 
 
@@ -74,16 +88,19 @@ form.addEventListener(
       console.log("uplaod file: ", file)
     }
 
+    /*
     fetch(
       url,
       {
         method: 'POST',
         body: formData,
       }
-      ).then(
-        response => {
-          console.log(response)
-        }
-        )
+    ).then(
+      response => {
+        console.log(response)
+      }
+    )
+    */
+
   }
-  )
+)

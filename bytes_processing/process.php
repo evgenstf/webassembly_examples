@@ -1,6 +1,24 @@
 <?php
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+	// проверяем наличие переменных $width и $height
+	if (isset($_POST['data'])) {
+
+    $ptr = fopen("files/file.txt", 'wb');
+    foreach ($_POST['data'] as $num) {
+      fwrite($ptr, pack('C', $num));
+    }
+    fclose($ptr);
+
+    /*
+		$fp = fopen('files/file.txt', 'w');
+		fwrite($fp, print_r($_POST['data'], TRUE));
+		fclose($fp);
+     */
+	}
+
+/*
   if (isset($_FILES['files'])) {
     $errors = [];
     $path = 'files/';
@@ -32,4 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($errors) print_r($errors);
   }
+*/
 }
+?>
