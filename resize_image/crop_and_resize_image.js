@@ -1559,7 +1559,7 @@ function isDataURI(filename) {
 
 
 
-var wasmBinaryFile = 'crop_image.wasm';
+var wasmBinaryFile = 'crop_and_resize_image.wasm';
 if (!isDataURI(wasmBinaryFile)) {
   wasmBinaryFile = locateFile(wasmBinaryFile);
 }

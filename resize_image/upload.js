@@ -8,7 +8,7 @@ function uploadFile(file) {
 
     console.log("rawImage length: ", rawImage.length)
 
-    cropImageFunction = Module.cwrap('crop_image', 'number', ['number', 'number', 'number']);
+    resizeImageFunction = Module.cwrap('resize_image', 'number', ['number', 'number', 'number']);
 
     function arrayToPtr(array) {
       var ptr = Module._malloc(array.length)
@@ -23,11 +23,11 @@ function uploadFile(file) {
       return array
     }
 
-    var croppedImagePtr = Module._malloc(rawImage.length)
-    var croppedImageLength = cropImageFunction(arrayToPtr(rawImage), rawImage.length, croppedImagePtr)
+    var resizedImagePtr = Module._malloc(rawImage.length)
+    var resizedImageLength = resizeImageFunction(arrayToPtr(rawImage), rawImage.length, resizedImagePtr)
 
-    var croppedImage = ptrToArray(croppedImagePtr, croppedImageLength)
-    console.log("croppedImage", croppedImage)
+    var resizedImage = ptrToArray(resizedImagePtr, resizedImageLength)
+    console.log("resizedImage", resizedImage)
 
 
     console.log("image filename: ", file.name)
@@ -35,7 +35,7 @@ function uploadFile(file) {
       type: "POST",
       url: 'process.php',
       data : {
-        data: croppedImage,
+        data: resizedImage,
         filename: file.name
       },
       success: function(data) {
