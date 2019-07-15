@@ -1,6 +1,0 @@
-#!/bin/bash -e
-
-em++ main.cpp --std=c++17 image_cropper/image_cropper.o -o crop_image.js -s EXPORTED_FUNCTIONS='["_crop_image"]' -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' -s FORCE_FILESYSTEM=1
-
-# emcc main.cpp -o gcd.js --std=c++17 -s EXPORT_ALL=1
-

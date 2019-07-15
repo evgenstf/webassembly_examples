@@ -1,4 +1,4 @@
 #!/bin/bash -e
 
-sudo php -S 127.0.0.1:80 -t .
+sudo php -S 10.0.166.117:3000 -t .
 # python3 server.py

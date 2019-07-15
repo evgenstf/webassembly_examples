@@ -1,14 +1,11 @@
-const url = 'process.php'
-const form = document.querySelector('form')
-
-function uploadFile(file) {
+function uploadCroppedFile(file) {
   var fr = new FileReader();
   fr.onload = function () {
     var rawImage = new Uint8Array(fr.result);
 
     console.log("rawImage length: ", rawImage.length)
 
-    resizeImageFunction = Module.cwrap('resize_image', 'number', ['number', 'number', 'number']);
+    cropImageFunction = Module.cwrap('crop_image', 'number', ['number', 'number', 'number']);
 
     function arrayToPtr(array) {
       var ptr = Module._malloc(array.length)
@@ -23,11 +20,11 @@ function uploadFile(file) {
       return array
     }
 
-    var resizedImagePtr = Module._malloc(rawImage.length)
-    var resizedImageLength = resizeImageFunction(arrayToPtr(rawImage), rawImage.length, resizedImagePtr)
+    var croppedImagePtr = Module._malloc(rawImage.length)
+    var croppedImageLength = cropImageFunction(arrayToPtr(rawImage), rawImage.length, croppedImagePtr)
 
-    var resizedImage = ptrToArray(resizedImagePtr, resizedImageLength)
-    console.log("resizedImage", resizedImage)
+    var croppedImage = ptrToArray(croppedImagePtr, croppedImageLength)
+    console.log("croppedImage", croppedImage)
 
 
     console.log("image filename: ", file.name)
@@ -35,8 +32,8 @@ function uploadFile(file) {
       type: "POST",
       url: 'process.php',
       data : {
-        data: resizedImage,
-        filename: file.name
+        data: croppedImage,
+        filename: "cropped_" + file.name
       },
       success: function(data) {
         console.log("file uploaded: ", file.name);
@@ -46,19 +43,18 @@ function uploadFile(file) {
   fr.readAsArrayBuffer(file);
 }
 
-
-form.addEventListener(
+document.getElementById("submit_cropped").addEventListener(
   'submit',
   e => {
     e.preventDefault()
 
-    const files = document.querySelector('[type=file]').files
+    const files = document.getElementById("submit_cropped").querySelector('[type=file]').files
     const formData = new FormData()
-
 
     for (let i = 0; i < files.length; i++) {
       let file = files[i]
-      uploadFile(file)
+      console.log("uplaod file: ", file)
+      uploadCroppedFile(file)
 
       console.log("uplaod file: ", file)
     }
