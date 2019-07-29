@@ -4,13 +4,15 @@ const form = document.querySelector('form')
 function uploadResizedFile(file) {
   var fr = new FileReader();
   fr.onload = function () {
+    console.time("image resize time");
     var rawImage = new Uint8Array(fr.result);
 
-    console.log("rawImage length: ", rawImage.length)
+    console.log("rawImage: ", rawImage)
 
-    resizeImageFunction = Module.cwrap('resize_image', 'number', ['number', 'number', 'number']);
+    resizeImageFunction = Module.cwrap('resizeJpeg', 'number', ['number', 'number', 'number', 'number', 'number', 'number']);
 
     function arrayToPtr(array) {
+      console.log("allocate bytes:", array.length);
       var ptr = Module._malloc(array.length)
       Module.HEAP8.set(array, ptr)
       return ptr
@@ -24,10 +26,18 @@ function uploadResizedFile(file) {
     }
 
     var resizedImagePtr = Module._malloc(rawImage.length)
-    var resizedImageLength = resizeImageFunction(arrayToPtr(rawImage), rawImage.length, resizedImagePtr)
+    var resizedImageLength = resizeImageFunction(
+      arrayToPtr(rawImage),
+      rawImage.length,
+      resizedImagePtr,
+      /*width =*/ 1024,
+      /*height =*/ 1024,
+      /*quality =*/ 1
+    )
 
     var resizedImage = ptrToArray(resizedImagePtr, resizedImageLength)
     console.log("resizedImage", resizedImage)
+    console.timeEnd("image resize time");
 
 
     console.log("image filename: ", file.name)
@@ -50,18 +60,17 @@ function uploadResizedFile(file) {
 document.getElementById("submit_resized").addEventListener(
   'submit',
   e => {
-    console.log("asdfasdf")
-    e.preventDefault()
+    e.preventDefault();
 
-    const files = document.getElementById("submit_resized").querySelector('[type=file]').files
-    const formData = new FormData()
+    const files = document.getElementById("submit_resized").querySelector('[type=file]').files;
+    const formData = new FormData();
 
 
     for (let i = 0; i < files.length; i++) {
-      let file = files[i]
-      uploadResizedFile(file)
+      let file = files[i];
+      uploadResizedFile(file);
 
-      console.log("uplaod file: ", file)
+      console.log("uplaod file: ", file);
     }
   }
 )
