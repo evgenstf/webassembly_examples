@@ -9,35 +9,15 @@
 
   <body>
     <body>
+      <script src="gcd.js"> </script>
       <script>
-        function loadWebAssembly(filename, imports) {
-          // Fetch the file and compile it
-          return fetch(filename)
-            .then(response => response.arrayBuffer())
-            .then(buffer => WebAssembly.compile(buffer))
-            .then(module => {
-              return new WebAssembly.Instance(module, imports);
-            });
+        Module.onRuntimeInitialized = function() {
+          const getCellStatus = Module.cwrap('calculate_gcd', 'number', ['number', 'number']);
+          console.log(getCellStatus(1,3));
+          console.log(getCellStatus(0,3));
+          console.log(getCellStatus(0,2));
+          console.log(getCellStatus(1,1));
         }
-
-        var importObject = {
-            env: {
-              '__memory_base': 0,
-              'tableBase': 0,
-              'memory': new WebAssembly.Memory({initial: 256}),
-              'table': new WebAssembly.Table({initial: 256, element: 'anyfunc'}),
-              abort: alert,
-            }
-        };
-
-        loadWebAssembly('gcd.wasm', importObject)
-        .then(instance => {
-          var exports = instance.exports;
-          var calculate_gcd = exports._calculate_gcd;
-          var calculated_gcd = calculate_gcd(12, 15);
-          console.log("calculated_gcd: ", calculated_gcd);
-        });
-
       </script>
     </body>
   </body>
