@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <iostream>
 
 
 extern "C" {
@@ -10,7 +9,6 @@ int calculate_gcd(int a, int b) {
     std::swap(a, b);
   }
   auto result = a + b;
-  std::cout << "calculated gcd: " << result << std::endl;
   return result;
 }
 
